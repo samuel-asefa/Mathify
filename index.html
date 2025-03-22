@@ -275,7 +275,7 @@
     </div>
 
     <script>
-        // DOM Elements
+        // grabbing all the dom elements we need
         const setupSection = document.getElementById('setupSection');
         const quizSection = document.getElementById('quizSection');
         const resultsSection = document.getElementById('resultsSection');
@@ -294,7 +294,7 @@
         const correctAnswersDisplay = document.getElementById('correctAnswers');
         const accuracyRateDisplay = document.getElementById('accuracyRate');
 
-        // Quiz State
+        // quiz state stuff
         let timerInterval;
         let timeRemaining = 0;
         let currentQuestion = null;
@@ -305,10 +305,10 @@
             incorrectCount: 0
         };
         
-        // Track used questions to prevent repeats
+        // keeping track of questions we've already seen to avoid repeats
         let usedQuestionIndices = [];
 
-        // Advanced NJ Math League style questions with more geometry
+        // nj math league style questions with more geometry focus
         const questionsBank = [
             {
                 question: "In a triangle ABC, the medians to sides AB, BC, and CA have lengths 5, 6, and 7 respectively. Find the perimeter of the triangle.",
@@ -432,13 +432,13 @@
             }
         ];
 
-        // Event Listeners
+        // setting up our event listeners
         startBtn.addEventListener('click', startQuiz);
         submitBtn.addEventListener('click', submitAnswer);
         nextBtn.addEventListener('click', loadNextQuestion);
         restartBtn.addEventListener('click', restartQuiz);
 
-        // Helper Functions
+        // helper functions for the quiz
         function formatTime(seconds) {
             const mins = Math.floor(seconds / 60);
             const secs = seconds % 60;
@@ -446,18 +446,18 @@
         }
 
         function getRandomQuestion() {
-            // If we've used all questions, reset the used questions tracking array
+            // if we've used all the questions, just reset and start over
             if (usedQuestionIndices.length >= questionsBank.length) {
                 usedQuestionIndices = [];
             }
             
-            // Keep trying to find an unused question
+            // keep trying until we find a question we haven't used yet
             let randomIndex;
             do {
                 randomIndex = Math.floor(Math.random() * questionsBank.length);
             } while (usedQuestionIndices.includes(randomIndex));
             
-            // Mark this question as used
+            // mark this one as used so we don't show it again
             usedQuestionIndices.push(randomIndex);
             
             return questionsBank[randomIndex];
@@ -467,10 +467,10 @@
             currentQuestion = getRandomQuestion();
             questionText.textContent = currentQuestion.question;
             
-            // Clear options container
+            // clear out any old options first
             optionsContainer.innerHTML = '';
             
-            // Add options
+            // add the new options
             currentQuestion.options.forEach(option => {
                 const optionElement = document.createElement('div');
                 optionElement.classList.add('option');
@@ -485,10 +485,10 @@
         }
 
         function selectOption(element, option) {
-            // Clear previous selections
+            // clear any previously selected options
             document.querySelectorAll('.option').forEach(opt => opt.classList.remove('selected'));
             
-            // Mark new selection
+            // highlight the one they just picked
             element.classList.add('selected');
             selectedOption = option;
         }
@@ -499,35 +499,35 @@
             incorrectCountDisplay.textContent = stats.incorrectCount;
         }
 
-        // Main Functions
+        // main quiz functions
         function startQuiz() {
-            // Get timer value and convert to seconds
+            // grab the timer setting and convert to seconds
             const minutes = parseInt(minutesInput.value) || 5;
             timeRemaining = minutes * 60;
             
-            // Reset stats
+            // reset all our counters
             stats = {
                 questionCount: 0,
                 correctCount: 0,
                 incorrectCount: 0
             };
             
-            // Reset used questions tracking
+            // clear the list of used questions
             usedQuestionIndices = [];
             
-            // Show quiz section, hide setup
+            // show the quiz and hide everything else
             setupSection.style.display = 'none';
             quizSection.style.display = 'block';
             resultsSection.style.display = 'none';
             
-            // Update display
+            // update what's shown on screen
             timerDisplay.textContent = formatTime(timeRemaining);
             updateStats();
             
-            // Start timer
+            // start the countdown
             timerInterval = setInterval(updateTimer, 1000);
             
-            // Load first question
+            // get the first question ready
             loadQuestion();
         }
 
@@ -535,6 +535,7 @@
             timeRemaining--;
             timerDisplay.textContent = formatTime(timeRemaining);
             
+            // check if time's up
             if (timeRemaining <= 0) {
                 clearInterval(timerInterval);
                 endQuiz();
@@ -549,7 +550,7 @@
             
             stats.questionCount++;
             
-            // Find selected option element
+            // find which option they selected
             const options = document.querySelectorAll('.option');
             let selectedElement;
             
@@ -558,12 +559,13 @@
                     selectedElement = option;
                 }
                 
+                // show which one was the right answer
                 if (option.textContent === currentQuestion.answer) {
                     option.classList.add('correct');
                 }
             });
             
-            // Check if answer is correct
+            // check if they got it right
             if (selectedOption === currentQuestion.answer) {
                 stats.correctCount++;
             } else {
@@ -573,16 +575,16 @@
                 }
             }
             
-            // Update display
+            // update the counters
             updateStats();
             
-            // Show explanation
+            // show them why the answer is what it is
             const explanationElement = document.createElement('div');
             explanationElement.classList.add('explanation');
             explanationElement.innerHTML = `<strong>Explanation:</strong> ${currentQuestion.explanation}`;
             questionText.appendChild(explanationElement);
             
-            // Hide submit button, show next button
+            // hide submit and show next
             submitBtn.style.display = 'none';
             nextBtn.style.display = 'inline-block';
         }
@@ -592,15 +594,15 @@
         }
 
         function endQuiz() {
-            // Show results
+            // show the results page
             quizSection.style.display = 'none';
             resultsSection.style.display = 'block';
             
-            // Update result stats
+            // update the final stats
             totalQuestionsDisplay.textContent = stats.questionCount;
             correctAnswersDisplay.textContent = stats.correctCount;
             
-            // Calculate accuracy
+            // figure out their accuracy percentage
             const accuracy = stats.questionCount > 0 
                 ? Math.round((stats.correctCount / stats.questionCount) * 100) 
                 : 0;
@@ -608,7 +610,7 @@
         }
 
         function restartQuiz() {
-            // Return to setup screen
+            // go back to the setup screen
             resultsSection.style.display = 'none';
             setupSection.style.display = 'flex';
         }
