@@ -1,18 +1,38 @@
 :root {
     --primary: #4a6fa5;
     --secondary: #166088;
-    --accent: #4fc3f7;
+    --accent: #166088;
     --background: #f5f9ff;
     --text: #333;
+    --text-light: #666;
     --correct: #66bb6a;
     --incorrect: #ef5350;
+    --container-bg: white;
+    --question-bg: #f5f7fa;
+    --option-bg: white;
+    --option-border: #4a6fa5;
+}
+
+[data-theme="dark"] {
+    --primary: #5f84bd;
+    --secondary: #55759d;
+    --accent: #4e9ec9;
+    --background: #121212;
+    --text: #e0e0e0;
+    --text-light: #aaaaaa;
+    --correct: #81c784;
+    --incorrect: #ef5350;
+    --container-bg: #1e1e1e;
+    --question-bg: #303030;
+    --option-bg: #2a2a2a;
+    --option-border: #5f84bd;
 }
 
 * {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-family: 'Open Sans', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
 body {
@@ -22,6 +42,7 @@ body {
     padding: 20px;
     max-width: 800px;
     margin: 0 auto;
+    transition: background-color 0.3s ease, color 0.3s ease;
 }
 
 h1 {
@@ -39,11 +60,12 @@ h3 {
 }
 
 .container {
-    background-color: white;
+    background-color: var(--container-bg);
     border-radius: 10px;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
     padding: 30px;
     margin: 20px 0;
+    transition: background-color 0.3s ease;
 }
 
 .setup-container {
@@ -66,10 +88,11 @@ h3 {
 }
 
 .question-container {
-    background-color: #f5f7fa;
+    background-color: var(--question-bg);
     padding: 20px;
     border-radius: 8px;
     margin-bottom: 20px;
+    transition: background-color 0.3s ease;
 }
 
 .question {
@@ -84,8 +107,8 @@ h3 {
 }
 
 .option {
-    background-color: white;
-    border: 2px solid var(--primary);
+    background-color: var(--option-bg);
+    border: 2px solid var(--option-border);
     border-radius: 5px;
     padding: 10px;
     cursor: pointer;
@@ -147,6 +170,8 @@ input[type="number"] {
     border-radius: 5px;
     font-size: 1rem;
     width: 80px;
+    background-color: var(--option-bg);
+    color: var(--text);
 }
 
 .stats {
@@ -179,10 +204,11 @@ input[type="number"] {
 }
 
 .result-item {
-    background-color: #f5f7fa;
+    background-color: var(--question-bg);
     padding: 15px;
     border-radius: 8px;
     text-align: center;
+    transition: background-color 0.3s ease;
 }
 
 .result-value {
@@ -193,7 +219,7 @@ input[type="number"] {
 
 .result-label {
     font-size: 0.9rem;
-    color: #666;
+    color: var(--text-light);
 }
 
 .footer {
@@ -201,5 +227,88 @@ input[type="number"] {
 }
 
 a {
-    color: rgb(0, 115, 255);
+    color: var(--accent);
+    transition: color 0.3s ease;
+}
+
+.explanation {
+    margin-top: 15px;
+    padding: 15px;
+    background-color: var(--question-bg);
+    border-radius: 5px;
+    font-size: 1rem;
+}
+
+/* Theme Toggle Button Styles */
+.theme-toggle {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+}
+
+.theme-btn {
+    background-color: var(--primary);
+    color: white;
+    border: none;
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.2rem;
+    transition: background-color 0.2s, transform 0.2s;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+    padding: 0;
+    position: relative;
+    overflow: hidden;
+}
+
+.theme-btn:hover {
+    background-color: var(--secondary);
+    transform: translateY(-2px);
+}
+
+.theme-btn:active {
+    transform: translateY(0);
+}
+
+/* Show/hide icons based on current theme */
+.light-icon, .dark-icon {
+    position: absolute;
+    transition: opacity 0.3s, transform 0.3s;
+}
+
+[data-theme="light"] .light-icon {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+[data-theme="light"] .dark-icon {
+    opacity: 0;
+    transform: translateY(20px);
+}
+
+[data-theme="dark"] .light-icon {
+    opacity: 0;
+    transform: translateY(-20px);
+}
+
+[data-theme="dark"] .dark-icon {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+@media (max-width: 768px) {
+    .theme-toggle {
+        top: 10px;
+        right: 10px;
+    }
+    
+    .theme-btn {
+        width: 35px;
+        height: 35px;
+        font-size: 1rem;
+    }
 }

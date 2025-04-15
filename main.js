@@ -1,4 +1,3 @@
-// grabbing all the dom elements we need
 const setupSection = document.getElementById('setupSection');
 const quizSection = document.getElementById('quizSection');
 const resultsSection = document.getElementById('resultsSection');
@@ -16,8 +15,8 @@ const incorrectCountDisplay = document.getElementById('incorrectCount');
 const totalQuestionsDisplay = document.getElementById('totalQuestions');
 const correctAnswersDisplay = document.getElementById('correctAnswers');
 const accuracyRateDisplay = document.getElementById('accuracyRate');
+const themeToggleBtn = document.getElementById('themeToggleBtn');
 
-// quiz state stuff
 let timerInterval;
 let timeRemaining = 0;
 let currentQuestion = null;
@@ -28,10 +27,8 @@ let stats = {
     incorrectCount: 0
 };
 
-// keeping track of questions we've already seen to avoid repeats
 let usedQuestionIndices = [];
 
-// nj math league style questions with more geometry focus
 const questionsBank = [
     {
         question: "In a triangle ABC, the medians to sides AB, BC, and CA have lengths 5, 6, and 7 respectively. Find the perimeter of the triangle.",
@@ -155,13 +152,42 @@ const questionsBank = [
     }
 ];
 
-// setting up our event listeners
 startBtn.addEventListener('click', startQuiz);
 submitBtn.addEventListener('click', submitAnswer);
 nextBtn.addEventListener('click', loadNextQuestion);
 restartBtn.addEventListener('click', restartQuiz);
+themeToggleBtn.addEventListener('click', toggleTheme);
 
-// helper functions for the quiz
+// Check for saved theme preference or user's system preference
+function initTheme() {
+    const savedTheme = localStorage.getItem('theme');
+    
+    if (savedTheme) {
+        document.documentElement.setAttribute('data-theme', savedTheme);
+    } else {
+        // Check if user prefers dark mode
+        const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+        if (prefersDark) {
+            document.documentElement.setAttribute('data-theme', 'dark');
+            localStorage.setItem('theme', 'dark');
+        }
+    }
+}
+
+function toggleTheme() {
+    const currentTheme = document.documentElement.getAttribute('data-theme') || 'light';
+    const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+    
+    document.documentElement.setAttribute('data-theme', newTheme);
+    localStorage.setItem('theme', newTheme);
+    
+    // Add animation effect
+    themeToggleBtn.classList.add('clicked');
+    setTimeout(() => {
+        themeToggleBtn.classList.remove('clicked');
+    }, 300);
+}
+
 function formatTime(seconds) {
     const mins = Math.floor(seconds / 60);
     const secs = seconds % 60;
@@ -169,18 +195,15 @@ function formatTime(seconds) {
 }
 
 function getRandomQuestion() {
-    // if we've used all the questions, just reset and start over
     if (usedQuestionIndices.length >= questionsBank.length) {
         usedQuestionIndices = [];
     }
     
-    // keep trying until we find a question we haven't used yet
     let randomIndex;
     do {
         randomIndex = Math.floor(Math.random() * questionsBank.length);
     } while (usedQuestionIndices.includes(randomIndex));
     
-    // mark this one as used so we don't show it again
     usedQuestionIndices.push(randomIndex);
     
     return questionsBank[randomIndex];
@@ -190,10 +213,8 @@ function loadQuestion() {
     currentQuestion = getRandomQuestion();
     questionText.textContent = currentQuestion.question;
     
-    // clear out any old options first
     optionsContainer.innerHTML = '';
     
-    // add the new options
     currentQuestion.options.forEach(option => {
         const optionElement = document.createElement('div');
         optionElement.classList.add('option');
@@ -208,10 +229,8 @@ function loadQuestion() {
 }
 
 function selectOption(element, option) {
-    // clear any previously selected options
     document.querySelectorAll('.option').forEach(opt => opt.classList.remove('selected'));
     
-    // highlight the one they just picked
     element.classList.add('selected');
     selectedOption = option;
 }
@@ -222,35 +241,27 @@ function updateStats() {
     incorrectCountDisplay.textContent = stats.incorrectCount;
 }
 
-// main quiz functions
 function startQuiz() {
-    // grab the timer setting and convert to seconds
     const minutes = parseInt(minutesInput.value) || 5;
     timeRemaining = minutes * 60;
     
-    // reset all our counters
     stats = {
         questionCount: 0,
         correctCount: 0,
         incorrectCount: 0
     };
     
-    // clear the list of used questions
     usedQuestionIndices = [];
     
-    // show the quiz and hide everything else
     setupSection.style.display = 'none';
     quizSection.style.display = 'block';
     resultsSection.style.display = 'none';
     
-    // update what's shown on screen
     timerDisplay.textContent = formatTime(timeRemaining);
     updateStats();
     
-    // start the countdown
     timerInterval = setInterval(updateTimer, 1000);
     
-    // get the first question ready
     loadQuestion();
 }
 
@@ -258,7 +269,6 @@ function updateTimer() {
     timeRemaining--;
     timerDisplay.textContent = formatTime(timeRemaining);
     
-    // check if time's up
     if (timeRemaining <= 0) {
         clearInterval(timerInterval);
         endQuiz();
@@ -273,7 +283,6 @@ function submitAnswer() {
     
     stats.questionCount++;
     
-    // find which option they selected
     const options = document.querySelectorAll('.option');
     let selectedElement;
     
@@ -282,13 +291,11 @@ function submitAnswer() {
             selectedElement = option;
         }
         
-        // show which one was the right answer
         if (option.textContent === currentQuestion.answer) {
             option.classList.add('correct');
         }
     });
     
-    // check if they got it right
     if (selectedOption === currentQuestion.answer) {
         stats.correctCount++;
     } else {
@@ -298,16 +305,13 @@ function submitAnswer() {
         }
     }
     
-    // update the counters
     updateStats();
     
-    // show them why the answer is what it is
     const explanationElement = document.createElement('div');
     explanationElement.classList.add('explanation');
     explanationElement.innerHTML = `<strong>Explanation:</strong> ${currentQuestion.explanation}`;
     questionText.appendChild(explanationElement);
     
-    // hide submit and show next
     submitBtn.style.display = 'none';
     nextBtn.style.display = 'inline-block';
 }
@@ -316,16 +320,14 @@ function loadNextQuestion() {
     loadQuestion();
 }
 
+
 function endQuiz() {
-    // show the results page
     quizSection.style.display = 'none';
     resultsSection.style.display = 'block';
     
-    // update the final stats
     totalQuestionsDisplay.textContent = stats.questionCount;
     correctAnswersDisplay.textContent = stats.correctCount;
     
-    // figure out their accuracy percentage
     const accuracy = stats.questionCount > 0 
         ? Math.round((stats.correctCount / stats.questionCount) * 100) 
         : 0;
@@ -333,7 +335,9 @@ function endQuiz() {
 }
 
 function restartQuiz() {
-    // go back to the setup screen
     resultsSection.style.display = 'none';
     setupSection.style.display = 'flex';
 }
+
+// Initialize theme when page loads
+initTheme();

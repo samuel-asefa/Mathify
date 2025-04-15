@@ -1,18 +1,27 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="light">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Mathify | NJ Math League Practice Tool</title>
     <link rel="icon" type="image" href="favicon.png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,400;0,600;0,700;1,400&display=swap" rel="stylesheet">
     <link rel="stylesheet" type="text/css" href="style.css">
     <script src="main.js" defer></script>
 </head>
 <body>
+    <div class="theme-toggle">
+        <button id="themeToggleBtn" class="theme-btn">
+            <span class="light-icon">☀️</span>
+            <span class="dark-icon">🌙</span>
+        </button>
+    </div>
+
     <h1>Mathify</h1>
     <h3><i>NJ Math League Practice Tool</i></h3>
     
-    <!-- Setup Section -->
     <div class="container setup-container" id="setupSection">
         <h2>Set Your Timer and Begin</h2>
         <div class="timer-input">
@@ -22,7 +31,6 @@
         <button class="btn" id="startBtn">Start Quiz</button>
     </div>
     
-    <!-- Quiz Section -->
     <div class="container quiz-container" id="quizSection">
         <div class="timer-display" id="timer">05:00</div>
         
@@ -35,7 +43,6 @@
         <div class="question-container">
             <div class="question" id="questionText">Loading question...</div>
             <div class="options" id="optionsContainer">
-                <!-- Options will be generated dynamically -->
             </div>
         </div>
         
@@ -43,7 +50,6 @@
         <button class="btn" id="nextBtn" style="display: none;">Next Question</button>
     </div>
     
-    <!-- Results Section -->
     <div class="container results-container" id="resultsSection">
         <h2 class="result-title">Quiz Complete!</h2>
         
