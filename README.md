@@ -20,4 +20,4 @@ A practice tool for NJ Math League competitions using timed quizzes.
 
 ---
 
-Built with React and Firebase*
+Built with React and Firebase
